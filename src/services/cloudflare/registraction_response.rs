@@ -15,7 +15,7 @@ impl Display for RegistrationResponse {
         let ips_str = self
             .ipv6
             .as_ref()
-            .map(|ipv6| format!("{},{}", &self.ipv4.clone(), ipv6))
+            .map(|ipv6| format!("{}/0,{}/0", &self.ipv4.clone(), ipv6))
             .unwrap_or((&self.ipv4).clone());
 
         buf.push_str(format!("Private key*: {}\n", self.private_key).as_str());
