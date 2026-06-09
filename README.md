@@ -68,6 +68,26 @@ Endpoint*: engage.cloudflareclient.com:2408
 Values with * must be used in your client
 ```
 
+### Shell completions
+
+`cloudflare-reg` can generate completion scripts for the shells supported by **clap_complete**. Add the following line to your shell’s startup file to load completions on the fly:
+
+```sh
+source <(cloudflare-reg completions SHELL)
+```
+
+Replace `SHELL` with one of the supported shells:
+
+- **bash** – `source <(cloudflare-reg completions bash)`
+- **zsh** – `source <(cloudflare-reg completions zsh)`
+- **fish** – `source (cloudflare-reg completions fish | psub)`
+- **elvish** – `eval (cloudflare-reg completions elvish | slurp)`
+- **powershell** – `cloudflare-reg completions powershell | Out-String | Invoke-Expression`
+
+Place the appropriate line in `~/.bashrc`, `~/.zshrc`, `~/.config/fish/config.fish`, `~/.config/elvish/rc.elv`, or your PowerShell profile respectively.
+
+---
+
 ### With a proxy 🕵️
 
 Got a SOCKS5 or HTTP proxy? No problem:
