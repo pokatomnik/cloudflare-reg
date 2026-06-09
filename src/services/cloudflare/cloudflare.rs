@@ -13,8 +13,6 @@ use crate::{
 
 const WARP_REGISTRATION_URL: &str = "https://api.cloudflareclient.com/v0a737/reg";
 const USER_AGENT_VALUE: &str = "WARP for Android";
-const DEVICE_TYPE: &str = "Linux";
-const LOCALE: &str = "en_US";
 
 pub(crate) struct Cloudflare {
     proxy: Option<Proxy>,
@@ -72,14 +70,10 @@ impl Cloudflare {
         let private_key_base64 = self.private_key_base64(&private_key);
         let public_key_base64 = self.public_key_base64(&public_key);
 
-        let request = RegistrationRequest {
-            key: &public_key_base64,
-            install_id: "",
-            warp_enabled: true,
-            tos: Utc::now().format("%Y-%m-%dT%H:%M:%S.000+00:00").to_string(),
-            device_type: DEVICE_TYPE,
-            locale: LOCALE,
-        };
+        let request = RegistrationRequest::new(
+            &public_key_base64,
+            Utc::now().format("%Y-%m-%dT%H:%M:%S.000+00:00").to_string(),
+        );
 
         let client = self.get_client()?;
 
@@ -106,14 +100,14 @@ impl Cloudflare {
                 anyhow::Error::msg("Incorrect Cloudflare response: missing addresses")
             })?;
 
-        let registration_response = RegistrationResponse {
-            endpoint: (&endpoint).required_str("host")?.to_string(),
-            private_key: private_key_base64,
-            public_key: public_key_base64,
-            peer_public_key: (&peer).required_str("public_key")?.to_string(),
-            ipv4: (&addresses).required_str("v4")?.to_string(),
-            ipv6: (&addresses).str("v6").map(ToString::to_string),
-        };
+        let registration_response = RegistrationResponse::new(
+            private_key_base64,
+            public_key_base64,
+            (&peer).required_str("public_key")?.to_string(),
+            (&endpoint).required_str("host")?.to_string(),
+            (&addresses).required_str("v4")?.to_string(),
+            (&addresses).str("v6").map(ToString::to_string),
+        );
 
         Ok(registration_response)
     }
